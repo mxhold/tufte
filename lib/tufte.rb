@@ -2,12 +2,19 @@ require "tufte/version"
 require "tufte/instance_variable_binding"
 require "tufte/post"
 require "tufte/markdown"
+require "tufte/cli"
 require "fileutils"
+require "erb"
 
 module Tufte
   def self.render(erb, instance_variables)
     binding = InstanceVariableBinding.new(instance_variables)
     ERB.new(erb).result(binding)
+  end
+
+  def self.init
+    scaffold_path = File.expand_path(File.join("..", "scaffold"), __dir__)
+    FileUtils.cp_r(File.join(scaffold_path, "."), ".")
   end
 
   def self.build
@@ -25,10 +32,13 @@ module Tufte
         rendered_post = render(post_template, :@post => post)
         file.write(render(layout_template, :@content => rendered_post))
       end
+      puts "Generated #{post.output_filename}"
     end
 
     File.open("index.html", "w") do |file|
-      file.write(render(index_template, :@posts => posts))
+      rendered_index = render(index_template, :@posts => posts)
+      file.write(render(layout_template, :@content => rendered_index))
     end
+    puts "Generated index.html"
   end
 end

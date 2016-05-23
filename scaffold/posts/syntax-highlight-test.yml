@@ -1,0 +1,35 @@
+---
+title: Syntax Highlight Test
+date: 2016-05-15
+---
+You can include snippets of code in your posts.
+
+Here's some Ruby:
+
+```ruby
+class Foo
+  def bar(arg)
+    puts "hello #{arg}"
+  end
+end
+```
+
+Here's some Elixir:
+
+```elixir
+defmodule Foo do
+  def bar(arg) do
+    IO.puts "hello #{arg}"
+  end
+end
+```
+
+Here's some Rust:
+
+```rust
+mod foo {
+  pub fn bar(arg: String) {
+    println!("hello {}", arg);
+  }
+}
+```

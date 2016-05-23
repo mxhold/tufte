@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require "tufte"
+
+Tufte::CLI.run(ARGV.shift)

@@ -2,13 +2,14 @@ require "spec_helper"
 require "tmpdir"
 
 RSpec.describe "integration test" do
-  it "creates the index file and blog posts" do
-    Dir.mktmpdir do |tmpdir|
-      Dir.chdir(tmpdir) do
-        Dir.mkdir("templates")
-        Dir.mkdir("posts")
-        File.open("templates/layout.html.erb", "w") do |file|
-          file.write <<-ERB
+  describe "build" do
+    it "creates the index file and blog posts" do
+      Dir.mktmpdir do |tmpdir|
+        Dir.chdir(tmpdir) do
+          Dir.mkdir("templates")
+          Dir.mkdir("posts")
+          File.open("templates/layout.html.erb", "w") do |file|
+            file.write <<-ERB
 <html>
 <head>
 <title>My blog</title>
@@ -19,11 +20,11 @@ RSpec.describe "integration test" do
 </body>
 
 </html>
-          ERB
-        end
+            ERB
+          end
 
-        File.open("templates/index.html.erb", "w") do |file|
-          file.write <<-ERB
+          File.open("templates/index.html.erb", "w") do |file|
+            file.write <<-ERB
 <h1>Welcome to my blog</h1>
 
 <ul>
@@ -33,20 +34,20 @@ RSpec.describe "integration test" do
   </li>
 <% end %>
 </ul>
-          ERB
-        end
+            ERB
+          end
 
-        File.open("templates/post.html.erb", "w") do |file|
-          file.write <<-ERB
+          File.open("templates/post.html.erb", "w") do |file|
+            file.write <<-ERB
 <h1><%= @post.title %></h1>
 <h2><%= @post.date %></h1>
 
 <%= @post.body %>
-          ERB
-        end
+            ERB
+          end
 
-        File.open("posts/hello-world.yml", "w") do |file|
-          file.write <<-ERB
+          File.open("posts/hello-world.yml", "w") do |file|
+            file.write <<-ERB
 ---
 title: Hello World
 date: 2016-05-12
@@ -55,13 +56,18 @@ Hello, world!
 
 ```ruby
 Date.today
-```
-          ERB
-        end
+  ```
+            ERB
+          end
 
-        Tufte.build
+          expect do
+            Tufte.build
+          end.to output(<<-EOF).to_stdout
+Generated 2016/5/12/hello-world/index.html
+Generated index.html
+          EOF
 
-        expect(File.read("2016/5/12/hello-world/index.html")).to eql <<-HTML
+          expect(File.read("2016/5/12/hello-world/index.html")).to eql <<-HTML
 <html>
 <head>
 <title>My blog</title>
@@ -79,8 +85,8 @@ Date.today
 </body>
 
 </html>
-        HTML
-        expect(File.read("index.html")).to eql <<-HTML
+          HTML
+          expect(File.read("index.html")).to eql <<-HTML
 <h1>Welcome to my blog</h1>
 
 <ul>
@@ -90,7 +96,24 @@ Date.today
   </li>
 
 </ul>
-        HTML
+          HTML
+        end
+      end
+    end
+  end
+
+  describe "init" do
+    it "generates scaffold files" do
+      Dir.chdir("scaffold")
+      scaffold_files = Dir.glob(File.join("**", "*"))
+      Dir.mktmpdir do |tmpdir|
+        Dir.chdir(tmpdir) do
+          Tufte.init
+
+          scaffold_files.each do |filename|
+            expect(File.exist?(filename)).to eql true
+          end
+        end
       end
     end
   end
