@@ -1,3 +1,18 @@
+.top-nav {
+  font-size: 2rem;
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0rem 0.5rem;
+  line-height: 1;
+}
+
+.top-nav a {
+  text-decoration: none;
+  background: none;
+  text-shadow: none;
+}
+
 footer {
   padding-bottom: 2rem;
 }
