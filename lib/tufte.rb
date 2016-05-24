@@ -11,13 +11,22 @@ module Tufte
     {
       :sidenote => -> (id, sidenote) do
         <<-HTML.chomp
-<label for="my-sn" class="margin-toggle sidenote-number"></label>
-<input type="checkbox" id="my-sn" class="margin-toggle"/>
+<label for="#{id}" class="margin-toggle sidenote-number"></label>
+<input type="checkbox" id="#{id}" class="margin-toggle"/>
 <span class="sidenote">
-I'm a sidenote.
+#{sidenote}
 </span>
         HTML
-      end
+      end,
+      :marginnote => -> (id, sidenote) do
+        <<-HTML.chomp
+<label for="#{id}" class="margin-toggle">&#8853;</label>
+<input type="checkbox" id="#{id}" class="margin-toggle"/>
+<span class="marginnote">
+#{sidenote}
+</span>
+        HTML
+      end,
     }
   end
 

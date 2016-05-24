@@ -29,5 +29,16 @@ I'm a sidenote.
 </span>
       HTML
     end
+
+    it "has a helper for making margin notes" do
+      result = Tufte.helper_methods[:marginnote].call("my-mn", "Margin note.")
+      expect(result).to eql <<-HTML.chomp
+<label for="my-mn" class="margin-toggle">&#8853;</label>
+<input type="checkbox" id="my-mn" class="margin-toggle"/>
+<span class="marginnote">
+Margin note.
+</span>
+      HTML
+    end
   end
 end
