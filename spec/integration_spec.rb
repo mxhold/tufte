@@ -87,6 +87,12 @@ Generated index.html
 </html>
           HTML
           expect(File.read("index.html")).to eql <<-HTML
+<html>
+<head>
+<title>My blog</title>
+</head>
+
+<body>
 <h1>Welcome to my blog</h1>
 
 <ul>
@@ -96,6 +102,10 @@ Generated index.html
   </li>
 
 </ul>
+
+</body>
+
+</html>
           HTML
         end
       end
