@@ -10,5 +10,24 @@ describe Tufte do
       result = Tufte.render("Hello, <%= @thing %>!", :@thing => "World")
       expect(result).to eql "Hello, World!"
     end
+
+    it "renders ERB given instance variables and methods" do
+      methods = { :add => -> (a, b) { a + b } }
+      result = Tufte.render("<%= add(@a, 2) %>!", { :@a => 1 }, methods)
+      expect(result).to eql "3!"
+    end
+  end
+
+  describe ".helper_methods" do
+    it "has a helper for making sidenotes" do
+      result = Tufte.helper_methods[:sidenote].call("my-sn", "I'm a sidenote.")
+      expect(result).to eql <<-HTML.chomp
+<label for="my-sn" class="margin-toggle sidenote-number"></label>
+<input type="checkbox" id="my-sn" class="margin-toggle"/>
+<span class="sidenote">
+I'm a sidenote.
+</span>
+      HTML
+    end
   end
 end

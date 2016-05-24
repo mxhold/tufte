@@ -1,5 +1,5 @@
 require "tufte/version"
-require "tufte/instance_variable_binding"
+require "tufte/binding"
 require "tufte/post"
 require "tufte/markdown"
 require "tufte/cli"
@@ -7,8 +7,25 @@ require "fileutils"
 require "erb"
 
 module Tufte
-  def self.render(erb, instance_variables)
-    binding = InstanceVariableBinding.new(instance_variables)
+  def self.helper_methods
+    {
+      :sidenote => -> (id, sidenote) do
+        <<-HTML.chomp
+<label for="my-sn" class="margin-toggle sidenote-number"></label>
+<input type="checkbox" id="my-sn" class="margin-toggle"/>
+<span class="sidenote">
+I'm a sidenote.
+</span>
+        HTML
+      end
+    }
+  end
+
+  def self.render(erb, instance_variables, helper_methods = self.helper_methods)
+    binding = Binding.new(
+      instance_variables: instance_variables,
+      methods: helper_methods,
+    )
     ERB.new(erb).result(binding)
   end
 
