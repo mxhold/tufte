@@ -1,128 +1,51 @@
 require "spec_helper"
 require "tmpdir"
 
+def all_files_in_current_directory
+  Dir.glob("./**/*").reject do |filename|
+    File.directory?(filename)
+  end.map do |filename|
+    [filename, File.read(filename)]
+  end.to_h
+end
+
 RSpec.describe "integration test" do
-  describe "build" do
-    it "creates the index file and blog posts" do
-      Dir.mktmpdir do |tmpdir|
-        Dir.chdir(tmpdir) do
-          Dir.mkdir("templates")
-          Dir.mkdir("posts")
-          File.open("templates/layout.html.erb", "w") do |file|
-            file.write <<-ERB
-<html>
-<head>
-<title>My blog</title>
-</head>
-
-<body>
-<%= @content %>
-</body>
-
-</html>
-            ERB
-          end
-
-          File.open("templates/index.html.erb", "w") do |file|
-            file.write <<-ERB
-<h1>Welcome to my blog</h1>
-
-<ul>
-<% @posts.each do |post| %>
-  <li>
-    <a href="<%= post.output_directory %>"><%= post.title %></a>
-  </li>
-<% end %>
-</ul>
-            ERB
-          end
-
-          File.open("templates/post.html.erb", "w") do |file|
-            file.write <<-ERB
-<h1><%= @post.title %></h1>
-<h2><%= @post.date %></h1>
-
-<%= @post.body %>
-            ERB
-          end
-
-          File.open("posts/hello-world.yml", "w") do |file|
-            file.write <<-ERB
----
-title: Hello World
-date: 2016-05-12
----
-Hello, world!
-
-```ruby
-Date.today
-  ```
-            ERB
-          end
-
-          expect do
-            Tufte.build
-          end.to output(<<-EOF).to_stdout
-Generated 2016/5/12/hello-world/index.html
-Generated index.html
-          EOF
-
-          expect(File.read("2016/5/12/hello-world/index.html")).to eql <<-HTML
-<html>
-<head>
-<title>My blog</title>
-</head>
-
-<body>
-<h1>Hello World</h1>
-<h2>2016 May 12</h1>
-
-<p>Hello, world!</p>
-<pre class="highlight ruby"><code><span class="no">Date</span><span class="p">.</span><span class="nf">today</span>
-</code></pre>
-
-
-</body>
-
-</html>
-          HTML
-          expect(File.read("index.html")).to eql <<-HTML
-<html>
-<head>
-<title>My blog</title>
-</head>
-
-<body>
-<h1>Welcome to my blog</h1>
-
-<ul>
-
-  <li>
-    <a href="2016/5/12/hello-world">Hello World</a>
-  </li>
-
-</ul>
-
-</body>
-
-</html>
-          HTML
-        end
+  describe "running init and build from scratch" do
+    it "generates exactly the expected files" do
+      expected_scaffold_files = Dir.chdir("scaffold") do
+        all_files_in_current_directory
       end
-    end
-  end
 
-  describe "init" do
-    it "generates scaffold files" do
-      Dir.chdir("scaffold")
-      scaffold_files = Dir.glob(File.join("**", "*"))
+      expected_built_files = Dir.chdir("spec/assets/integration") do
+        all_files_in_current_directory
+      end
+
       Dir.mktmpdir do |tmpdir|
         Dir.chdir(tmpdir) do
           Tufte.init
 
-          scaffold_files.each do |filename|
-            expect(File.exist?(filename)).to eql true
+          expect do
+            Tufte.build
+          end.to output(<<-TXT).to_stdout
+Generated 2016/5/15/syntax-highlight-test/index.html
+Generated index.html
+          TXT
+
+          actual_files = all_files_in_current_directory
+
+          actual_files.each do |filename, contents|
+            if expected_scaffold_files[filename]
+              expect(contents).to eql expected_scaffold_files[filename]
+            elsif expected_built_files[filename]
+              expect(contents).to eql expected_built_files[filename]
+            else
+              raise "Unexpected file #{filename}"
+            end
           end
+
+          expect(actual_files.keys).to match_array(
+            expected_scaffold_files.keys + expected_built_files.keys
+          )
         end
       end
     end
