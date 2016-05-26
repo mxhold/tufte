@@ -7,34 +7,30 @@ require "fileutils"
 require "erb"
 
 module Tufte
-  def self.helper_methods
-    {
-      :sidenote => -> (id, sidenote) do
+  module Helpers
+    def self.sidenote(id, note)
         <<-HTML.chomp
 <label for="#{id}" class="margin-toggle sidenote-number"></label>
 <input type="checkbox" id="#{id}" class="margin-toggle"/>
 <span class="sidenote">
-#{sidenote}
+#{note}
 </span>
         HTML
-      end,
-      :marginnote => -> (id, sidenote) do
-        <<-HTML.chomp
+    end
+
+    def self.marginnote(id, note)
+      <<-HTML.chomp
 <label for="#{id}" class="margin-toggle">&#8853;</label>
 <input type="checkbox" id="#{id}" class="margin-toggle"/>
 <span class="marginnote">
-#{sidenote}
+#{note}
 </span>
-        HTML
-      end,
-    }
+      HTML
+    end
   end
 
-  def self.render(erb, instance_variables, helper_methods = self.helper_methods)
-    binding = Binding.new(
-      instance_variables: instance_variables,
-      methods: helper_methods,
-    )
+  def self.render(erb, instance_variables, helpers = Helpers)
+    binding = Binding.new(instance_variables: instance_variables, mod: helpers)
     ERB.new(erb).result(binding)
   end
 

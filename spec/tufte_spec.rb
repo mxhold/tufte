@@ -11,34 +11,45 @@ describe Tufte do
       expect(result).to eql "Hello, World!"
     end
 
-    it "renders ERB given instance variables and methods" do
-      methods = { :add => -> (a, b) { a + b } }
-      result = Tufte.render("<%= add(@a, 2) %>!", { :@a => 1 }, methods)
+    it "renders ERB given instance variables and helpers" do
+      result = Tufte.render(
+        "<%= add(@a, 2) %>!",
+        { :@a => 1 },
+        Module.new do
+          def self.add(a, b)
+            a + b
+          end
+        end
+      )
       expect(result).to eql "3!"
     end
   end
 
-  describe ".helper_methods" do
-    it "has a helper for making sidenotes" do
-      result = Tufte.helper_methods[:sidenote].call("my-sn", "I'm a sidenote.")
-      expect(result).to eql <<-HTML.chomp
+  describe Tufte::Helpers do
+    describe "#sidenote" do
+      it "generates HTML for a sidenote" do
+        result = Tufte::Helpers.sidenote("my-sn", "I'm a sidenote.")
+        expect(result).to eql <<-HTML.chomp
 <label for="my-sn" class="margin-toggle sidenote-number"></label>
 <input type="checkbox" id="my-sn" class="margin-toggle"/>
 <span class="sidenote">
 I'm a sidenote.
 </span>
-      HTML
+        HTML
+      end
     end
 
-    it "has a helper for making margin notes" do
-      result = Tufte.helper_methods[:marginnote].call("my-mn", "Margin note.")
-      expect(result).to eql <<-HTML.chomp
+    describe "#marginnote" do
+      it "generates HTML for a marginnote" do
+        result = Tufte::Helpers.marginnote("my-mn", "Margin note.")
+        expect(result).to eql <<-HTML.chomp
 <label for="my-mn" class="margin-toggle">&#8853;</label>
 <input type="checkbox" id="my-mn" class="margin-toggle"/>
 <span class="marginnote">
 Margin note.
 </span>
-      HTML
+        HTML
+      end
     end
   end
 end
