@@ -19,13 +19,11 @@
 
   <section>
     <h2>Blog posts</h2>
-    <ul>
-    <% @posts.sort_by(&:date).reverse.each do |post| %>
+    <ul><% @posts.sort_by(&:date).reverse.each do |post| %>
       <li>
         <%= post.date %> &mdash;
         <a href="<%= post.output_directory %>"><%= post.title %></a>
       </li>
-    <% end %>
-    </ul>
+    <% end %></ul>
   </section>
 </article>
