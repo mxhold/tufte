@@ -1,6 +1,12 @@
 # tufte
 
+[![Gem
+Version](https://badge.fury.io/rb/tufte.svg)](https://badge.fury.io/rb/tufte)
 [![Build Status](https://travis-ci.org/mxhold/tufte.svg?branch=master)](https://travis-ci.org/mxhold/tufte)
+[![Code
+Climate](https://codeclimate.com/github/mxhold/tufte/badges/gpa.svg)](https://codeclimate.com/github/mxhold/tufte)
+[![Test
+Coverage](https://codeclimate.com/github/mxhold/tufte/badges/coverage.svg)](https://codeclimate.com/github/mxhold/tufte/coverage)
 
 tufte is a minimal static site generator ideal for getting a blog running
 quickly with:
