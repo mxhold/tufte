@@ -1,6 +1,3 @@
-Rename/extract blag
-rubocop
-Travis CI
 extract helpers to scaffolded file
 pages/
 README
