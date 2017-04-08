@@ -33,3 +33,9 @@ mod foo {
   }
 }
 ```
+
+Here's a marginnote:
+
+<%= marginnote("my-note", "Hello there!") %>
+
+

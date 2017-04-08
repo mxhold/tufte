@@ -7,7 +7,7 @@ module Tufte
       Post.new(
         date: Date.parse("2016-05-16"),
         title: "The Title",
-        raw_body: "This is the body.",
+        raw_body: "This is the body. <%= @post.slug %> <%= marginnote('mynote', 'hello') %>",
         slug: "my-post",
       )
     end
@@ -25,8 +25,8 @@ module Tufte
     end
 
     describe "#body" do
-      it "returns the body" do
-        expect(subject.body).to eql "<p>This is the body.</p>\n"
+      it "renders ERB with helpers, @post, and then to HTML" do
+        expect(subject.body).to eql "<p>This is the body. my-post <label for=\"mynote\" class=\"margin-toggle\">&#8853;</label>\n<input type=\"checkbox\" id=\"mynote\" class=\"margin-toggle\"/>\n<span class=\"marginnote\">\nhello\n</span></p>\n"
       end
     end
 

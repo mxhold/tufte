@@ -12,7 +12,8 @@ module Tufte
     end
 
     def body
-      Markdown.new(@raw_body).to_html
+      rendered_erb = Tufte.render(@raw_body, :@post => self)
+      Markdown.new(rendered_erb).to_html
     end
 
     def date
