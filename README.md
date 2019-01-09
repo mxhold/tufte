@@ -7,6 +7,7 @@ Version](https://badge.fury.io/rb/tufte.svg)](https://badge.fury.io/rb/tufte)
 Climate](https://codeclimate.com/github/mxhold/tufte/badges/gpa.svg)](https://codeclimate.com/github/mxhold/tufte)
 [![Test
 Coverage](https://codeclimate.com/github/mxhold/tufte/badges/coverage.svg)](https://codeclimate.com/github/mxhold/tufte/coverage)
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
 tufte is a minimal static site generator ideal for getting a blog running
 quickly with:
@@ -15,7 +16,7 @@ quickly with:
   - [redcarpet](https://github.com/vmg/redcarpet) for Markdown rendering
   - [rouge](https://github.com/jneen/rouge) for syntax highlighting
 
-See it in action at <https://maxwellholder.com>.
+**Note:** this library is an [unmaintained](http://unmaintained.tech/) experiment. If you want an actual static site generator, I would recommend [Jekyll](https://jekyllrb.com/).
 
 ## Getting started
 
